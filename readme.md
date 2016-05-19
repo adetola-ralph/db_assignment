@@ -15,11 +15,11 @@ The database is made up of 6 tables
 1. Get all the capentry work_requests with their assigned maintenance user
 	assuming the job table is as below
 
-	| job_id   | job_category   |
-	|---------------------------|
-	| 1        | carpentry      |
-	| 2        | electrical     |
-	| 3        | plumbing       |
+	|job_id   |job_category   |
+	|---------|---------------|
+	| 1       |carpentry      |
+	| 2       |electrical     |
+	| 3       |plumbing       |
 
 	`SELECT student.fullname, work_request.work_id, problem_category.problem_category, maintenance_users.fullname, work_request.problem_description, work_request.problem_location, work_request.date_opened, work_request.status, work_request.student_id, work_request.staff_id FROM work_request Inner Join student ON work_request.student_id = student.student_id Inner Join problem_category ON work_request.problem_category_id = problem_category.problem_category_id Inner Join maintenance_users ON work_request.staff_id = maintenance_users.staff_id WHERE work_request.problem_category_id =  '1'`
 
