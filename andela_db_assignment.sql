@@ -1,138 +1,87 @@
--- ---
--- Globals
--- ---
+CREATE TABLE `job`
+(
+  `job_id` integer NOT NULL,
+  `job_category` varbinary(255) NOT NULL,
+  CONSTRAINT job_id PRIMARY KEY (`job_id`)
+)
+;
 
--- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
--- SET FOREIGN_KEY_CHECKS=0;
+CREATE TABLE `maintenance_users`
+(
+  `staff_id` integer NOT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `password` varbinary(255) NOT NULL,
+  `email` varbinary(255) NOT NULL,
+  `role_id` integer NOT NULL,
+  `job_id` integer NOT NULL,
+  CONSTRAINT staff_id PRIMARY KEY (`staff_id`)
+)
+;
 
--- ---
--- Table 'maintenance_users'
--- maintenance users in the database
--- ---
+CREATE TABLE `problem_category`
+(
+  `problem_category_id` integer NOT NULL,
+  `problem_category` varbinary(255) NOT NULL,
+  `job_id` integer NOT NULL,
+  CONSTRAINT problem_category_id PRIMARY KEY (`problem_category_id`)
+)
+;
 
-DROP TABLE IF EXISTS `maintenance_users`;
-		
-CREATE TABLE `maintenance_users` (
-  `staff_id` INTEGER NOT NULL AUTO_INCREMENT DEFAULT NULL,
-  `fullname` VARCHAR NOT NULL DEFAULT 'NULL',
-  `username` VARCHAR NOT NULL DEFAULT 'NULL',
-  `password` VARCHAR NOT NULL DEFAULT 'NULL',
-  `email` VARCHAR NOT NULL DEFAULT 'NULL',
-  `role_id` INTEGER NOT NULL DEFAULT NULL,
-  `job_id` INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (`staff_id`),
-KEY (`role_id`)
-) COMMENT 'maintenance users in the database';
+CREATE TABLE `role`
+(
+  `role_id` integer NOT NULL,
+  `role` varchar(255) NOT NULL,
+  CONSTRAINT role_id PRIMARY KEY (`role_id`)
+)
+;
 
--- ---
--- Table 'role'
--- shows the user roles
--- ---
+CREATE TABLE `student`
+(
+  `student_id` integer NOT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `program` varbinary(255) NOT NULL,
+  `hall` varchar(255) NOT NULL,
+  `room` varchar(4) NOT NULL,
+  CONSTRAINT student_id PRIMARY KEY (`student_id`)
+)
+;
 
-DROP TABLE IF EXISTS `role`;
-		
-CREATE TABLE `role` (
-  `role_id` INTEGER NOT NULL DEFAULT NULL,
-  `role` VARCHAR NOT NULL DEFAULT 'NULL',
-  PRIMARY KEY (`role_id`)
-) COMMENT 'shows the user roles';
+CREATE TABLE `work_request`
+(
+  `work_id` integer NOT NULL,
+  `problem_category_id` integer NOT NULL,
+  `problem_description` varbinary(255) NOT NULL,
+  `problem_location` varchar(255) NOT NULL,
+  `date_opened` date NOT NULL,
+  `status` varbinary(10) NOT NULL,
+  `student_id` integer NOT NULL,
+  `staff_id` integer,
+  CONSTRAINT work_id PRIMARY KEY (`work_id`)
+)
+;
 
--- ---
--- Table 'job'
--- 
--- ---
+ALTER TABLE `maintenance_users` ADD CONSTRAINT `fk_maintenance_users_`
+  FOREIGN KEY (`job_id`) REFERENCES `job` (`job_id`)
+;
 
-DROP TABLE IF EXISTS `job`;
-		
-CREATE TABLE `job` (
-  `job_id` INTEGER NOT NULL DEFAULT NULL,
-  `job_description` VARCHAR NOT NULL DEFAULT 'NULL',
-  PRIMARY KEY (`job_id`)
-);
+ALTER TABLE `maintenance_users` ADD CONSTRAINT `fk_maintenance_users_role_id`
+  FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
+;
 
--- ---
--- Table 'student'
--- 
--- ---
+ALTER TABLE `problem_category` ADD CONSTRAINT `fk_problem_category_`
+  FOREIGN KEY (`job_id`) REFERENCES `job` (`job_id`)
+;
 
-DROP TABLE IF EXISTS `student`;
-		
-CREATE TABLE `student` (
-  `student_id` INTEGER NOT NULL DEFAULT NULL,
-  `fullname` VARCHAR NOT NULL DEFAULT 'NULL',
-  `password` VARCHAR NOT NULL DEFAULT 'NULL',
-  `program` VARCHAR NOT NULL DEFAULT 'NULL',
-  `hall` VARCHAR NOT NULL DEFAULT 'NULL',
-  `room` VARCHAR(4) NOT NULL DEFAULT 'NULL',
-  PRIMARY KEY (`student_id`)
-);
+ALTER TABLE `work_request` ADD CONSTRAINT `fk_work_request_`
+  FOREIGN KEY (`problem_category_id`) REFERENCES `problem_category` (`problem_category_id`)
+;
 
--- ---
--- Table 'work_request'
--- 
--- ---
+ALTER TABLE `work_request` ADD CONSTRAINT `fk_work_request_srudent_id`
+  FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+;
 
-DROP TABLE IF EXISTS `work_request`;
-		
-CREATE TABLE `work_request` (
-  `work_id` INTEGER NOT NULL AUTO_INCREMENT DEFAULT NULL,
-  `problem_category_id` INTEGER NOT NULL DEFAULT NULL,
-  `problem_description` VARCHAR NOT NULL DEFAULT 'NULL',
-  `problem_location` VARCHAR NOT NULL DEFAULT 'NULL',
-  `date_opened` DATE NOT NULL DEFAULT 'NULL',
-  `status` VARCHAR NOT NULL DEFAULT 'NULL',
-  `staff_id` INTEGER NULL DEFAULT NULL COMMENT 'Staff assigned to the job',
-  `student_id` INTEGER NOT NULL DEFAULT NULL COMMENT 'student who opened the request',
-  PRIMARY KEY (`work_id`)
-);
+ALTER TABLE `work_request` ADD CONSTRAINT `fk_work_request_staff_id`
+  FOREIGN KEY (`staff_id`) REFERENCES `maintenance_users` (`staff_id`)
+;
 
--- ---
--- Table 'problem_category'
--- 
--- ---
-
-DROP TABLE IF EXISTS `problem_category`;
-		
-CREATE TABLE `problem_category` (
-  `problem_category_id` INTEGER NOT NULL DEFAULT NULL,
-  `problem_category` VARCHAR NOT NULL DEFAULT 'NULL',
-  PRIMARY KEY (`problem_category_id`)
-);
-
--- ---
--- Foreign Keys 
--- ---
-
-ALTER TABLE `maintenance_users` ADD FOREIGN KEY (role_id) REFERENCES `role` (`role_id`);
-ALTER TABLE `maintenance_users` ADD FOREIGN KEY (job_id) REFERENCES `job` (`job_id`);
-ALTER TABLE `work_request` ADD FOREIGN KEY (problem_category_id) REFERENCES `problem_category` (`problem_category_id`);
-ALTER TABLE `work_request` ADD FOREIGN KEY (staff_id) REFERENCES `maintenance_users` (`staff_id`);
-ALTER TABLE `work_request` ADD FOREIGN KEY (student_id) REFERENCES `student` (`student_id`);
-
--- ---
--- Table Properties
--- ---
-
--- ALTER TABLE `maintenance_users` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `role` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `job` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `student` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `work_request` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `problem_category` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ---
--- Test Data
--- ---
-
--- INSERT INTO `maintenance_users` (`staff_id`,`fullname`,`username`,`password`,`email`,`role_id`,`job_id`) VALUES
--- ('','','','','','','');
--- INSERT INTO `role` (`role_id`,`role`) VALUES
--- ('','');
--- INSERT INTO `job` (`job_id`,`job_description`) VALUES
--- ('','');
--- INSERT INTO `student` (`student_id`,`fullname`,`password`,`program`,`hall`,`room`) VALUES
--- ('','','','','','');
--- INSERT INTO `work_request` (`work_id`,`problem_category_id`,`problem_description`,`problem_location`,`date_opened`,`status`,`staff_id`,`student_id`) VALUES
--- ('','','','','','','','');
--- INSERT INTO `problem_category` (`problem_category_id`,`problem_category`) VALUES
--- ('','');
