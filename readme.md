@@ -18,18 +18,16 @@ The database is made up of 6 tables
 	| job_id   | job_category   |
 	|---------------------------|
 	| 1        | carpentry      |
-    |----------|----------------|
 	| 2        | electrical     |
-    |----------|----------------|
 	| 3        | plumbing       |
 
-	`SQL: SELECT student.fullname, work_request.work_id, problem_category.problem_category, maintenance_users.fullname, work_request.problem_description, work_request.problem_location, work_request.date_opened, work_request.status, work_request.student_id, work_request.staff_id FROM work_request Inner Join student ON work_request.student_id = student.student_id Inner Join problem_category ON work_request.problem_category_id = problem_category.problem_category_id Inner Join maintenance_users ON work_request.staff_id = maintenance_users.staff_id WHERE work_request.problem_category_id =  '1'`
+	`SELECT student.fullname, work_request.work_id, problem_category.problem_category, maintenance_users.fullname, work_request.problem_description, work_request.problem_location, work_request.date_opened, work_request.status, work_request.student_id, work_request.staff_id FROM work_request Inner Join student ON work_request.student_id = student.student_id Inner Join problem_category ON work_request.problem_category_id = problem_category.problem_category_id Inner Join maintenance_users ON work_request.staff_id = maintenance_users.staff_id WHERE work_request.problem_category_id =  '1'`
 
-2. Another Query
-	`select`
-3. Another Query
-	`insert`
-4. Another Query
-	`update`
-5. Delete an entry from the work_request table based on the work id
-	`delete`
+2. Select all maintenance workers and display their jobs
+	`SELECT maintenance_users.fullname, maintenance_users.password, maintenance_users.email, job.job_category FROM maintenance_users Inner Join job ON maintenance_users.job_id = job.job_id`
+3. Insert a new entry into the work_request table
+	`INSERT INTO work_request (work_id, problem_category_id, problem_description, problem_location, date_opened, status, student_id, staff_id) VALUES ('<work-id>','<problem-category-id>','<description>','<location>','<date>','<status>','<student-id>','<staff-id>')`
+4. Update the work_entry with work_id 2 to assigned and assign a maintenance worker
+	`UPDATE work_request SET status='assigned', staff_id='22' WHERE work_id = 2`
+5. Delete an entry from the work_request table with work_id 1
+	`DELETE FROM work_request WHERE work_id = 1`
