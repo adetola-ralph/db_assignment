@@ -12,3 +12,9 @@ The database is made up of 6 tables
 6. problem_category table contains information on the type of problem in the work request (carpentry, electrical, plumbing).
 
 ##Situations and their queries
+1. Get all the capentry work_requests with their assigned maintenance user	
+	assuming the job table is as below
+	
+	| job_id   | job_category   |
+	|----------|-----------------|
+	
